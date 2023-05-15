@@ -1,29 +1,50 @@
-# fashion-MNIST-image-classifier
+# Fashion-MNIST-image-classifier
 
-The goal in this assignment is to develop a machine learning model that can classify between images of T-shirts and dress-shirts. You are given the following files:
-• TrainData.csv: It contains 12000 training examples. Each row contains 784 values. The dataset has been derived from Fashion-MNIST dataset. Each example is a flattened 28x28 pixel gray-scale image. You can reshape the examples to visualize what each image looks like.
+## Introduction
+The goal of this project is to develop a machine learning model to classify between images of T-shirts and dress-shirts.
 
-• TrainLabels.csv: This file contains true labels for the examples in TrainExamples.csv
-(T-shirts = 1 , dress-shirts = -1)
+## Dataset
+The dataset consists of 12000 flattened 28x28 pixel gray-scale images, which are stored in TrainData.csv. The true labels for the examples are provided in TrainLabels.csv, where T-shirts are labeled with 1 and dress-shirts with -1. TestData.csv contains the test examples.
 
-• TestData.csv: This file contains test examples.
-
-• You can load train and test data using the following code:
+## Usage
+To load the data, use the following code:
+```
 Xtr=np.loadtxt("TrainData.csv")
 Ytr=np.loadtxt("TrainLabels.csv")
 Xts=np.loadtxt("TestData.csv")
+```
 
-• To visualize an example (say trainining example at index 10, you can use the following
-code):
+To visualize a training example at index 10, use the following code:
+```
 import matplotlib.pyplot as plt
 plt.imshow(Xtr[10].reshape([28,28]))
+```
 
-## Requirements:
-1. You are required to extract hog features from these images for the classification help
-at: https://www.analyticsvidhya.com/blog/2019/09/feature-engineering-images-introduction-hog-feature-descriptor/
+## Feature Engineering
+For this assignment, we need to extract the HOG (Histogram of Oriented Gradients) features from the images. A tutorial on how to do this can be found at: https://www.analyticsvidhya.com/blog/2019/09/feature-engineering-images-introduction-hog-feature-descriptor/.
 
-2. Output the extracted version of yourself in the output (If not comfortable create an image that has your name and roll number written in it under a car picture)
+## Output
+As part of this project, an image that has my name and roll number written in it under a car picture has been included. The extracted HOG features of this image are included in the output folder.
 
-3. Now use the dataset provided and plot any one image from there like
+## Plotting
+To plot any one image from the dataset and its extracted features, we can use the following code:
+```
+import matplotlib.pyplot as plt
+from skimage.feature import hog
 
-4. Next plot the original image and its extracted features
+image = Xtr[0].reshape([28,28])
+fd, hog_image = hog(image, orientations=8, pixels_per_cell=(4, 4),
+                    cells_per_block=(1, 1), visualize=True, multichannel=False)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4), sharex=True, sharey=True)
+
+ax1.imshow(image, cmap=plt.cm.gray)
+ax1.set_title('Input image')
+
+# Rescale histogram for better display
+hog_image_rescaled = exposure.rescale_intensity(hog_image, in_range=(0, 10))
+
+ax2.imshow(hog_image_rescaled, cmap=plt.cm.gray)
+ax2.set_title('HOG features')
+plt.show()
+```
